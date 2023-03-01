@@ -3,7 +3,8 @@ import argparse
 import logging
 
 def encrypt(key, msg):
-    return msg
+    encrypted = msg
+    return encrypted
 
 def run(addr, port, msg, key):
     alice = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

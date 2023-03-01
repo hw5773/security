@@ -4,7 +4,8 @@ import argparse
 import logging
 
 def decrypt(key, encrypted):
-    return encrypted
+    decrypted = encrypted
+    return decrypted
 
 def handler(alice, key):
     encrypted = alice.recv(1024).decode()
