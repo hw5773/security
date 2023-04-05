@@ -1,6 +1,10 @@
 import socket
 import argparse
 import logging
+import base64
+from Cryptodome.Cipher import AES
+
+BLOCK_SIZE = 16
 
 def encrypt(key, iv, msg):
     encrypted = msg
@@ -13,8 +17,13 @@ def run(addr, port, key, iv):
     challenge = alice.recv(1024).decode()
     logging.info("[*] Challenge: {}".format(challenge))
     encrypted = encrypt(key, iv, challenge)
-    logging.info("[*] Ciphertext: {}".format(encrypted)
+    logging.info("[*] Ciphertext: {}".format(encrypted))
     alice.send(encrypted.encode())
+    result = alice.recv(1024).decode()
+    if result == "success":
+        logging.info("[*] Success!")
+    else:
+        logging.info("[*] Failure!")
 
 def command_line_args():
     parser = argparse.ArgumentParser()

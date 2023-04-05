@@ -3,7 +3,11 @@ import threading
 import argparse
 import logging
 import random
+import base64
 from etc import generate_messages
+from Cryptodome.Cipher import AES
+
+BLOCK_SIZE = 16
 
 def decrypt(key, iv, encrypted):
     decrypted = encrypted
@@ -19,6 +23,12 @@ def handler(alice, key, iv):
     logging.info("[*] Received: {}".format(encrypted))
     decrypted = decrypt(key, iv, encrypted)
     logging.info("[*] Plaintext: {}".format(decrypted))
+    if challenge == decrypted and challenge != encrypted:
+        logging.info("[*] Success!")
+        alice.send("success".encode())
+    else:
+        logging.info("[*] Failure!")
+        alice.send("failure".encode())
 
     alice.close()
 
