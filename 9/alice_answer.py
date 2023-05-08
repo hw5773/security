@@ -1,5 +1,7 @@
 import socket, argparse, logging
 import os, sys
+import hmac, hashlib
+from Crypto.Cipher import AES
 
 MAC_THEN_ENCRYPT = 0
 ENCRYPT_THEN_MAC = 1
@@ -10,11 +12,16 @@ BLOCK_LENGTH = 16   # AES block size
 
 # string * string * bytes -> bytes
 def encrypt(key, iv, msg):
-    raise NotImplementedError("You need to implement the encrypt() function that performs AES-128 encryption")
+    pad = (BLOCK_LENGTH - len(msg)) % BLOCK_LENGTH
+    msg = msg + pad * chr(pad).encode()
+    aes = AES.new(key.encode(), AES.MODE_CBC, iv.encode())
+    encrypted = aes.encrypt(msg)
+    return encrypted
 
 # string * bytes -> bytes
 def calc_mac(key, msg):
-    raise NotImplementedError("You need to implement the calc_mac() function that performs HMAC-SHA256")
+    h = hmac.new(key.encode(), msg, hashlib.sha256)
+    return h.digest()
 
 # int * string * string * string * string -> bytes
 def ae_encrypt(ae, enckey, mackey, iv, challenge):
@@ -27,7 +34,9 @@ def ae_encrypt(ae, enckey, mackey, iv, challenge):
         encrypted = encrypt(enckey, iv, msg)
         return encrypted
     elif ae == ENCRYPT_THEN_MAC:
-        raise NotImplementedError("Please implement the encrypt-then-mac approach")
+        encrypted = encrypt(enckey, iv, msg)
+        mac = calc_mac(mackey, encrypted)
+        return encrypted + mac
 
 def run(addr, port, ae, enckey, mackey, iv):
     alice = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -1,6 +1,8 @@
 import socket, threading, argparse, logging, random
 import os, sys
+import hmac, hashlib
 from etc import generate_messages
+from Crypto.Cipher import AES
 
 MAC_THEN_ENCRYPT = 0
 ENCRYPT_THEN_MAC = 1
@@ -11,11 +13,19 @@ BLOCK_LENGTH = 16       # AES block size
 
 # string * string * bytes -> bytes
 def decrypt(key, iv, encrypted):
-    raise NotImplementedError("You need to implement the decrypt() function that performs AES-128 decryption")
+    aes = AES.new(key.encode(), AES.MODE_CBC, iv.encode())
+    decrypted = aes.decrypt(encrypted)
+    decrypted = decrypted[0:-decrypted[-1]]
+    return decrypted
 
 # string * bytes * bytes -> bool
 def verify(key, msg, answer):
-    raise NotImplementedError("You need to implement the verify() funtion that verifies the MAC code")
+    h = hmac.new(key.encode(), msg, hashlib.sha256)
+    mac = h.digest()
+    ret = False
+    if mac == answer:
+        ret = True
+    return ret
 
 # int * string * string * string -> string * bool
 def ae_decrypt(ae, enckey, mackey, iv, received):
@@ -23,14 +33,18 @@ def ae_decrypt(ae, enckey, mackey, iv, received):
     verified = False
 
     if ae == MAC_THEN_ENCRYPT:
+        # encrypted message
         decrypted = decrypt(enckey, iv, received)
         verified = verify(mackey, decrypted[:-MAC_LENGTH], decrypted[-MAC_LENGTH:])
         decrypted = decrypted[:-MAC_LENGTH]
         decrypted = decrypted.decode()
         return decrypted, verified
     elif ae == ENCRYPT_THEN_MAC:
-        raise NotImplementedError("Please implement the encrypt-then-mac approach")
-
+        # encrypted message (~ bytes) || mac (32 bytes)
+        verified = verify(mackey, received[:-MAC_LENGTH], received[-MAC_LENGTH:])
+        decrypted = decrypt(enckey, iv, received[:-MAC_LENGTH])
+        decrypted = decrypted.decode()
+        return decrypted, verified
 
 def handler(alice, ae, enckey, mackey, iv):
     challenges = generate_messages()

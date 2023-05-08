@@ -3,6 +3,7 @@ import argparse
 import logging
 import os
 import sys
+import hashlib
 
 def parse_problem(pname):
     ret = {}
@@ -32,7 +33,9 @@ def parse_problem(pname):
     return ret
 
 def digest(content):
-    return "please implement the digest function based on SHA256"
+    m = hashlib.sha256()
+    m.update(content)
+    return m.hexdigest()
 
 def run(problem):
     problems = parse_problem(problem)
