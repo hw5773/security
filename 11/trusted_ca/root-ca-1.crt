@@ -1,0 +1,1 @@
+{"subject": "root-ca-1", "issuer": "root-ca-1", "serial": 76717968, "not before": "2020-01-01", "not after": "2030-12-31", "public key": "-----BEGIN PUBLIC KEY-----\nMEkwEwYHKoZIzj0CAQYIKoZIzj0DAQEDMgAEIwCYrIsq4HBe8CjX+iIjM3eyZiX0\nr263OtY1677RGnZiAVZWPz4zMR/o0LHt6/gF\n-----END PUBLIC KEY-----\n", "signature": "8UoH7/MDF+Bm4zkXDdH78ydOOcxDLRTVaVVorX+2xlnO1wrXCDxqFfjKWmQntcts"}
