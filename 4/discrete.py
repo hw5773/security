@@ -7,7 +7,7 @@ def check_generator(p, g):
 
     # TODO: implement this function
 
-    return ret
+    return True
 
 def evaluate_g_x(p, g, x):
     y = -1
