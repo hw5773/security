@@ -33,7 +33,9 @@ def parse_problem(pname):
     return ret
 
 def digest(content):
-    pass
+    m = hashlib.sha256()
+    m.update(content[1:])
+    return m.hexdigest()
 
 def run(problem):
     problems = parse_problem(problem)

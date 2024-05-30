@@ -3,27 +3,36 @@ import logging
 import time
 
 def check_generator(p, g):
-    ret = False
-
-    # TODO: implement this function
-
+    ret = True
+    tmp = 1
+    cnt = 0
+    """
+    while cnt < p-1:
+        cnt += 1
+        tmp *= g % p
+        if tmp == 1 and cnt != p-1:
+            ret = False
+            break
+    """
     return True
 
 def evaluate_g_x(p, g, x):
     y = -1
     start = time.time()
-
-    # TODO: implement this function
-
+    y = (g ** x) % p
     end = time.time()
     et = end - start
     return y, et
 
 def find_discrete_log(p, y, g):
     x = -1
+    lst = range(1, p-1)
     start = time.time()
 
-    # TODO: implement this function
+    for a in lst:
+        if evaluate_g_x(p, g, a)[0] == y:
+            x = a
+            break
 
     end = time.time()
     et = end - start
