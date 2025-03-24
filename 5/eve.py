@@ -5,11 +5,7 @@ import logging
 from etc import generate_c2i_mapper, generate_i2c_mapper
 
 def brute_force(encrypted, c2i, i2c):
-    for k in range(10000000):
-        plain = ""
-        for c in encrypted:
-            plain += i2c[(c2i[c] - k) % 26]
-        print ("k: {}, decryption: {}".format(k, plain))
+    pass
 
 def handler(alice, c2i, i2c):
     encrypted = alice.recv(1024).decode()
